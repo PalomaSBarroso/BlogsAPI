@@ -20,7 +20,6 @@ const createCategory = async ({ name }) => {
 const getAll = async () => {
   try {
     const categories = await Category.findAll();
-
     return { ...SERVICE_SUCESSFULL, message: categories };
   } catch (error) {
     console.error(error.message);
