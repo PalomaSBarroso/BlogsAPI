@@ -1,24 +1,37 @@
-const { errorMap, httpStatusCode } = require('../utils');
+const { httpStatusCode, customerResponse } = require('../utils');
 const { userService } = require('../services');
-const { createToken } = require('../authentication/createToken');
+
+const { correctReturn } = httpStatusCode;
+
+const login = async (req, res) => {
+  const { type, message } = await userService.login(req.body);
+  customerResponse(type, message, res, correctReturn.OK);
+};
 
 const createUser = async (req, res) => {
   const { type, message } = await userService.createUser(req.body);
-  if (type) return res.status(errorMap.mapError(type)).json({ message });
-
-  const { password: _, ...userWithoutPassword } = message.dataValues;
-  const token = createToken(userWithoutPassword);
-  return res.status(httpStatusCode.CREATED).json({ token });
+  customerResponse(type, message, res, correctReturn.CREATED);
 };
 
 const getAll = async (_req, res) => {
   const { type, message } = await userService.getAll();
-  if (type) return res.status(errorMap.mapError(type)).json({ message });
+  return customerResponse(type, message, res, correctReturn.OK);
+};
 
-  return res.status(httpStatusCode.OK).json(message);
+const getById = async (req, res) => {
+  const { type, message } = await userService.getById(req.params.id);
+  return customerResponse(type, message, res, correctReturn.OK);
+};
+
+const deleteUser = async (req, res) => {
+  const { type, message } = await userService.deleteUser(req.user.id);
+  return customerResponse(type, message, res, httpStatusCode.NO_CONTENT);
 };
 
 module.exports = {
+  login,
   createUser,
   getAll,
+  getById,
+  deleteUser,
 };

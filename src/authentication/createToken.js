@@ -1,40 +1,23 @@
 const auth = require('jsonwebtoken');
-const { httpStatusCode } = require('../utils');
 
 const SECRET_KEY = process.env.JWT_SECRET;
 
-const createToken = (user) => {
-  const token = auth.sign({ data: user }, process.env.JWT_SECRET, {
-    expiresIn: '1h',
-    algorithm: 'HS256',
-  });
-
-  return token;
+const config = {
+  expiresIn: '1h',
+  algorithm: 'HS256',
 };
 
-const validateToken = async (req, res, next) => {
-   try {
-      const token = req.header('Authorization');
+const createToken = (user) => auth.sign({ data: user }, process.env.JWT_SECRET, config);
 
-    if (!token) {
-      return res.status(httpStatusCode.UNAUTHORIZED).json({ message: 'Token not found' });
-    }
-
-    const decoded = auth.verify(token, SECRET_KEY);
-
-    const { data } = decoded;
-
-    req.user = data;
-
-    next();
+const tokenVerification = (token) => {
+  try {
+    return auth.verify(token, SECRET_KEY);
   } catch (error) {
-    console.error(error.message);
-
-    return res.status(httpStatusCode.UNAUTHORIZED).json({ message: 'Expired or invalid token' });
+    return { error: error.message };
   }
   };
 
 module.exports = {
   createToken,
-  validateToken,
+  tokenVerification,
 };

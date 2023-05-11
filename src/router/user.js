@@ -1,8 +1,10 @@
 const router = require('express').Router();
 const { userController } = require('../controller');
-const { validateToken } = require('../authentication/createToken');
+const validationToken = require('../middleware/validationToken');
 
-router.get('/', validateToken, userController.getAll);
+router.get('/', validationToken, userController.getAll);
 router.post('/', userController.createUser);
+router.delete('/me', validationToken, userController.deleteUser);
+router.get('/:id', validationToken, userController.getById);
 
 module.exports = router;

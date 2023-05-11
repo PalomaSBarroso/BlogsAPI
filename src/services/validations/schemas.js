@@ -1,22 +1,54 @@
 const Joi = require('joi');
 
+const requiredFields = 'Some required fields are missing';
+const textFields = '{#label} must be the type text';
+const customMessage = {
+  'any.required': requiredFields,
+  'string.empty': requiredFields,
+  'string.base': textFields,
+  'array.min': requiredFields,
+};
+
+const categoryIds = Joi.array().items(Joi.number()).min(1).required();
+const content = Joi.string().min(1).required();
+const displayName = Joi.string().min(8).required();
+const email = Joi.string().email().min(1).required();
+const image = Joi.string();
+const name = Joi.string().min(5).required();
+const password = Joi.string().min(6).required();
+const title = Joi.string().min(1).required();
+
 const loginSchema = Joi.object({
-  email: Joi.string().min(1).required(),
-  password: Joi.string().min(1).required(),
-}).required().messages({
-  'any.required': 'Some required fields are missing',
-  'string.empty': 'Some required fields are missing',
-  'string.base': '{#label} must be the type text',
-});
+  email,
+  password,
+}).required().messages(customMessage);
 
 const createUserSchema = Joi.object({
-  displayName: Joi.string().min(8).required(),
-  email: Joi.string().email().min(1).required(),
-  password: Joi.string().min(6).required(),
-  image: Joi.string(),
-});
+  displayName,
+  email,
+  password,
+  image,
+}).required();
+
+const createCategorySchema = Joi.object({
+  name,
+}).required();
+
+const createPostSchema = Joi.object({
+  title,
+  content,
+  categoryIds,
+}).required().messages(customMessage);
+
+const updatePostSchema = Joi.object({
+  title,
+  content,
+}).required().messages(customMessage);
 
 module.exports = {
   loginSchema,
   createUserSchema,
+  createCategorySchema,
+  createPostSchema,
+  updatePostSchema,
 };

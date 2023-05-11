@@ -1,7 +1,7 @@
-const errorMap = require('./errorMap');
+const customerResponse = require('./customerResponse');
 const httpStatusCode = require('./httpStatusCode');
 
 module.exports = {
-  errorMap,
-  httpStatusCode,
+   customerResponse,
+    httpStatusCode,
 };
