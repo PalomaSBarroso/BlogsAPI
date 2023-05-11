@@ -1,6 +1,5 @@
 module.exports = (sequelize, _DataTypes) => {
-    const PostCategory = sequelize.define('PostCategory',
-    {}, {
+    const PostCategory = sequelize.define('PostCategory', {
       timestamps: false,
       underscored: true, 
       tableName: 'posts_categories'
